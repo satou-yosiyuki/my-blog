@@ -1,45 +1,33 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import { client } from "../libs/client";
+import { Link } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+export const getStaticProps = async () => {
+  const data = await client.get({ endpoint: "blog" });
+  return {
+    props: {
+      blog: data.contents,
+    },
+  };
+};
+
+function App({ blog }) {
+  const [count, setCount] = useState(0);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+    <div>
+      <ul>
+        {blog.map((blog) => (
+          <li key={blog.id}>
+            <Link to={`/blog/${blog.id}`}>
+              <a>{blog.title}</a>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
